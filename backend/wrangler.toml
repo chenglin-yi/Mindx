@@ -9,3 +9,5 @@ database_id = "YOUR_DATABASE_ID"
 
 [vars]
 API_KEY = "your-secret-api-key"
+JWT_SECRET = "change-this-to-a-random-256-bit-key-in-production"
+ALLOWED_ORIGINS = "http://localhost:5173"

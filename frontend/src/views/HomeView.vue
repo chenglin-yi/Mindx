@@ -2,11 +2,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMindmapStore } from '../stores/mindmap'
+import { useAuthStore } from '../stores/auth'
 import { mindmapApi } from '../api'
 import JSZip from 'jszip'
 
 const router = useRouter()
 const store = useMindmapStore()
+const authStore = useAuthStore()
 
 // 对话框状态
 const showCreateDialog = ref(false)
@@ -96,6 +98,21 @@ async function handleDeleteFolder(id, e) {
   if (confirm('确定要删除这个文件夹吗？文件夹内的思维导图将移到根目录。')) {
     await store.deleteFolder(id)
   }
+}
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
+
+function goBack() {
+  if (!store.currentFolderId) return
+  const parentFolder = store.folders.find(f => f.id === store.currentFolderId)
+  store.navigateToFolder(parentFolder?.parent_id || null)
+}
+
+function goRoot() {
+  store.navigateToFolder(null)
 }
 
 function navigateToFolder(folderId) {
@@ -510,6 +527,15 @@ function getItemCount(item) {
               <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
           </button>
+          <!-- 返回上级/根目录按钮 -->
+          <template v-if="store.currentFolderId">
+            <button class="nav-btn" @click="goBack" title="Back to parent folder">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="nav-btn" @click="goRoot" title="Back to root">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </button>
+          </template>
           <!-- 面包屑 -->
           <nav class="breadcrumb">
             <span
@@ -532,6 +558,12 @@ function getItemCount(item) {
         <div class="topbar-right">
           <div class="view-info">
             <span class="item-count">{{ store.currentFolders.length + store.currentMindmaps.length }} 项</span>
+          </div>
+          <div class="user-menu">
+            <span class="username">{{ authStore.user?.username }}</span>
+            <button class="logout-btn" @click="handleLogout" title="Logout">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            </button>
           </div>
         </div>
       </header>
@@ -1117,6 +1149,25 @@ function getItemCount(item) {
   color: #64748b;
   cursor: pointer;
 }
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.nav-btn:hover {
+  background: #f1f5f9;
+  color: #4f46e5;
+  border-color: #c7d2fe;
+}
 
 .breadcrumb {
   display: flex;
@@ -1159,6 +1210,34 @@ function getItemCount(item) {
   background: #f1f5f9;
   padding: 4px 10px;
   border-radius: 12px;
+}
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.username {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.logout-btn:hover {
+  color: #ef4444;
+  border-color: #fca5a5;
+  background: #fef2f2;
 }
 
 /* ==================== 内容区 ==================== */

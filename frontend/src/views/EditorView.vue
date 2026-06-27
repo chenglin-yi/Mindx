@@ -9,6 +9,7 @@ import KeyboardNavigation from 'simple-mind-map/src/plugins/KeyboardNavigation.j
 import Search from 'simple-mind-map/src/plugins/Search.js'
 import Export from 'simple-mind-map/src/plugins/Export.js'
 import Demonstrate from 'simple-mind-map/src/plugins/Demonstrate.js'
+import DOMPurify from 'dompurify'
 
 MindMap.usePlugin(Drag).usePlugin(Select).usePlugin(KeyboardNavigation).usePlugin(Search).usePlugin(Export).usePlugin(Demonstrate)
 
@@ -540,7 +541,7 @@ function updateMinimap() {
   // 克隆内部绘制组
   const drawGroup = svgEl.querySelector('g')
   if (drawGroup) {
-    minimapSvgContent.value = drawGroup.outerHTML
+    minimapSvgContent.value = DOMPurify.sanitize(drawGroup.outerHTML, { USE_PROFILES: { svg: true } })
   }
 
   // 更新视口

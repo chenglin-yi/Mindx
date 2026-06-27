@@ -37,7 +37,7 @@ export const useMindmapStore = defineStore('mindmap', () => {
 
   async function fetchFolders() {
     try {
-      const { data } = await folderApi.getList()
+      const { data } = await folderApi.getAll()
       folders.value = data
     } catch (error) {
       console.error('Failed to fetch folders:', error)
@@ -47,7 +47,7 @@ export const useMindmapStore = defineStore('mindmap', () => {
   async function fetchMindmaps() {
     loading.value = true
     try {
-      const { data } = await mindmapApi.getList()
+      const { data } = await mindmapApi.getAll()
       mindmaps.value = data
     } catch (error) {
       console.error('Failed to fetch mindmaps:', error)
