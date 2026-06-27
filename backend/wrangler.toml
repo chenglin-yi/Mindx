@@ -5,9 +5,8 @@ compatibility_date = "2024-06-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "mindx"
-database_id = "YOUR_DATABASE_ID"
+database_id = "0fc35d9e-fca9-4750-827f-2d95c173172f"
 
 [vars]
-API_KEY = "your-secret-api-key"
-JWT_SECRET = "change-this-to-a-random-256-bit-key-in-production"
-ALLOWED_ORIGINS = "http://localhost:5173"
+JWT_SECRET = "mindx-jwt-secret-2026-yichenglin-secure-key"
+ALLOWED_ORIGINS = "http://localhost:5173,https://mindx-20x.pages.dev,https://c2790dec.mindx-20x.pages.dev,https://07cdfc9e.mindx-20x.pages.dev"
